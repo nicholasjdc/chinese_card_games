@@ -1,0 +1,10 @@
+- Auth Context
+    - Keep sessionID, userID, and username consistent regardless of reload
+- Games
+    - Store games based on gameID
+    - Have distinct players based on their userID
+    - send messages in Game room to all players and to specific players based on userID
+    - Build simple game (Presidents no rules) as proof of concept
+    - Test Game with players
+    - Client Socket Functions (draw (multiple), play (multiple))
+    - Visual (Green background, cards saved as svgs)
