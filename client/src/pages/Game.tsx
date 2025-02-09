@@ -1,16 +1,20 @@
 import { useEffect } from "react"
 import { useAuthContext } from "../hooks/useAuthContext"
+import { useOnSocketConnect } from "../hooks/useOnSocketConnect"
 
 function Game({socket}){
     const {session} = useAuthContext()
-    console.log(socket.id)
+    const onPressMe = () =>{
+        console.log(localStorage.getItem("userInfo"))
+    }
+    useOnSocketConnect(socket)
     useEffect(()=> {
         socket.on("messageResponse", data => {})
       }, [socket])
     return(
         <div className="love">
-        <p>{socket.id}</p>
-        <p>{session['username']}</p>
+        {session && <p>{session['username']} </p>}
+        <button>Press Me</button>
         <p></p>
         </div>
     )

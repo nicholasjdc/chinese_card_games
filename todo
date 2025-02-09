@@ -1,5 +1,6 @@
 - Auth Context
-    - Keep sessionID, userID, and username consistent regardless of reload
+
+
 - Games
     - Store games based on gameID
     - Have distinct players based on their userID

@@ -1,38 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuthContext } from "../hooks/useAuthContext";
+import { useOnSocketConnect } from "../hooks/useOnSocketConnect";
+import { Socket } from "socket.io-client";
 
 const Home = ({ socket }) => {
     const navigate = useNavigate();
   const [userName, setUserName] = useState("");
   const [gameID, setGameID] = useState("")
   const {session, dispatch} = useAuthContext();
-  console.log(socket)
 
-  useEffect(()=>{
-
-  }, [])
-  useEffect(()=>{
-    socket.on("session", data =>{
-      localStorage.setItem('sessionID', data['sessionID'])
-      localStorage.setItem('username', data['username'])
-      localStorage.setItem('userID', data['userID'])
-    })
-    }
-  , [socket])
-  const handleSubmit = (e) => {
+  useOnSocketConnect(socket)
+  const onCreateGame = (e) => {
     e.preventDefault();
-    console.log(userName);
-    dispatch({type:'CHANGE_NAME', payload: {'username': localStorage.getItem('username'), 'userID': localStorage.getItem('userID'), 'sessionID':localStorage.getItem('')}})
+    /*
+    localStorage.setItem("userInfo", JSON.stringify({'username': userName, 'userID': session['userID'], 'sessionID':session['sessionID']}))
 
-    localStorage.setItem("username", userName);
+    dispatch({type:'UPDATE', payload: {'userInfo': {'username': userName, 'userID': session['userID'], 'sessionID':session['sessionID']}}})
+*/
   
-    //socket.emit("newUser", { , {socketID: socket.id} });
-    navigate("/game/" + gameID)
+    socket.emit("sessionUpdate", session );
+    socket.emit("gameroomCreate", {}, function(gameroomID){
+      socket.emit("gameroomJoin", {'id': gameroomID}, function(gameID){
+        navigate("/game/" + gameID)
+      })
+
+    })
   };
   return (
     <div id="homePage">
-      <form className="home__container" onSubmit={handleSubmit}>
+      {session && <p>{session['username']}</p>}
+      <form className="home__container">
         <label htmlFor="username">Username</label>
         <input
           type="text"
@@ -58,7 +56,7 @@ const Home = ({ socket }) => {
         <button className="home__cta">JOIN GAME</button>
       </form>
       <p></p>
-      <button className="host_butt">CREATE NEW GAME</button>
+      <button className="host_butt" onClick={onCreateGame}>CREATE NEW GAME</button>
     </div>
   );
 };
